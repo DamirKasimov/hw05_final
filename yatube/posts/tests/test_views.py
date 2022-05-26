@@ -95,7 +95,7 @@ class PostViewsTests(TestCase):
         """Шаблон home сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse('posts:post_create'))
         fields_q = len(response.context.get('form').fields)
-        self.assertEqual(fields_q, 2)
+        self.assertEqual(fields_q, 3)
 
     def test_post_follow_me(self):
         response = self.authorized_client.get

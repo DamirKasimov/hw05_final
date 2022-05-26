@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
-from posts.models import Post, Group
+from posts.models import Post, Group, Follow
 from django import forms
 
 
@@ -98,7 +98,7 @@ class PostViewsTests(TestCase):
         self.assertEqual(fields_q, 3)
 
     def test_post_follow_me(self):
-        response = self.authorized_client.get
+        self.authorized_client.get
         (reverse('posts:profile_follow',
                  kwargs={'username': self.authorized_client}))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(Follow.objects.all().count(), 0)

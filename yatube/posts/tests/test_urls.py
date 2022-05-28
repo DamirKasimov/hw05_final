@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
-
+from django.core.cache import cache
 from ..models import Post, Group
 
 
@@ -27,6 +27,7 @@ class PostURLTests(TestCase):
         )
 
     def setUp(self):
+        cache.clear()
         # Создаем неавторизованный клиент
         self.guest_client = Client()
         # Создаем пользователя

@@ -3,18 +3,19 @@ from django.core.paginator import Paginator
 from posts.models import Post, Group, User, Follow
 from posts.forms import CommentForm, PostForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_page
+
+DEPTH = 10
 
 
-depth = 10
-
-
+@cache_page(20)
 def index(request):
     # Одна строка вместо тысячи слов на SQL:
     # в переменную posts будет сохранена выборка из 10 объектов модели Post,
     # отсортированных по полю pub_date по убыванию (от больших
     # значений к меньшим)
     post_list = Post.objects.all().order_by('-pub_date')
-    paginator = Paginator(post_list, depth)
+    paginator = Paginator(post_list, DEPTH)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
@@ -26,7 +27,7 @@ def index(request):
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     post_list = Post.objects.filter(group=group).order_by('-pub_date')
-    paginator = Paginator(post_list, depth)
+    paginator = Paginator(post_list, DEPTH)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
@@ -41,7 +42,7 @@ def profile(request, username):
     r = request.user
     author_name = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=author_name).order_by('-pub_date')
-    paginator = Paginator(posts, depth)
+    paginator = Paginator(posts, DEPTH)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     user_posts_q = Post.objects.filter(author=author_name).count()
@@ -141,16 +142,16 @@ def follow_index(request):
     # информация о текущем пользователе доступна в переменной request.user
     post_list = Post.objects.all().order_by('-pub_date')
     new_post_list = []
-    follow_list = ['авторы']
-    user_list = ['юзер']
+    follow_list = []
+    user_list = []
     followings = Follow.objects.all()
     for follow in (followings):
-        y = follow.author
-        x = follow.user
-        user_list.append(x)
-        follow_list.append(y)
-        new_post_list += post_list.filter(author=y)
-    paginator = Paginator(new_post_list, depth)
+        author_to_follow = follow.author
+        who_follows = follow.user
+        user_list.append(who_follows)
+        follow_list.append(author_to_follow)
+        new_post_list += post_list.filter(author=author_to_follow)
+    paginator = Paginator(new_post_list, DEPTH)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {

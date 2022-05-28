@@ -83,3 +83,17 @@ class Follow (models.Model):
         related_name='following',
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'user'],
+                name='unique_check'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(author=models.F('user')),
+                name='author_not_user'
+            ),
+        ]

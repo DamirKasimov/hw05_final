@@ -34,6 +34,7 @@ class PostViewsTests(TestCase):
         self.client = Client()
 
     def test_pages_uses_correct_template_unauth(self):
+        cache.clear()
         temps = {
             reverse('posts:posts_basedir_path'): 'posts/index.html',
             reverse('posts:group_list', kwargs={'slug':
@@ -252,11 +253,11 @@ class PaginatorTest(TestCase):
             text='Текст',
             author=self.user,
         )
-        len = Post.objects.count()
+        leng = Post.objects.count()
         resp = self.authorized_client.get(reverse('posts:posts_basedir_path'))
-        self.assertEqual(len(resp.context.get('page_obj')), len)
+        self.assertEqual(len(resp.context.get('page_obj')), leng)
         Post.objects.last().delete()
-        self.assertEqual(len(resp.context.get('page_obj')), len)
+        self.assertEqual(len(resp.context.get('page_obj')), leng)
         cache.clear()
         resp = self.authorized_client.get(reverse('posts:posts_basedir_path'))
-        self.assertEqual(len(resp.context.get('page_obj')), len - 1)
+        self.assertEqual(len(resp.context.get('page_obj')), leng - 1)

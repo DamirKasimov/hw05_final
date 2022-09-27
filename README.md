@@ -6,7 +6,7 @@
 2. Добавление/редактирование постов, комментариев на чужие посты.
 3. Добавление картинок.
 4. Подписка на авторов.
-
+5. Всё пишется в базу данных sqlite3.
 
 
 [![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)

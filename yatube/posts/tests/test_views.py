@@ -254,6 +254,7 @@ class PaginatorTest(TestCase):
             author=self.user,
         )
         leng = Post.objects.count()
+        self.assertEqual((Post.objects.(id=1)), 'kva')
         resp = self.authorized_client.get(reverse('posts:posts_basedir_path'))
         self.assertEqual(len(resp.context.get('page_obj')), leng)
         Post.objects.last().delete()
